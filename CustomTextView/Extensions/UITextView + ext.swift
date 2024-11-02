@@ -12,14 +12,12 @@ extension UITextView {
     func leftSpace(_ amount:CGFloat) {
         self.textContainerInset = UIEdgeInsets(top: 4, left: amount, bottom: 4, right: 20)
     }
-    
 }
 
-
 extension UITextView: UITextViewDelegate {
-
+    
     var placeholder: String? {
-
+        
         get {
             var placeholderText: String?
 
@@ -75,7 +73,6 @@ extension UITextView: UITextViewDelegate {
         placeholderLabel.font = self.font
         placeholderLabel.textColor = UIColor.lightGray
         placeholderLabel.tag = 100
-//        self.delegate = self
         
         self.addSubview(placeholderLabel)
     }

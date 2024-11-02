@@ -144,9 +144,8 @@ extension StepTableViewController : UITableViewDelegate, UITableViewDataSource {
         
         let cellDescription = tableView.dequeueReusableCell(withIdentifier: cell.id, for: indexPath) as! StepDescriptionCell
 
-        print("section: \(indexPath.section), row: \(indexPath.row)")
+        cellDescription.textInput = cell.describe
         cellDescription.stepDescribeTextView.delegate = self
-        cellDescription.stepDescribeTextView.text = cell.describe
 
         return cellDescription
     }
@@ -161,7 +160,7 @@ extension StepTableViewController : UITableViewDelegate, UITableViewDataSource {
         
         if editingStyle == .delete {
             sectionData.remove(at: indexPath.row)
-            stepsTableView.deleteRows(at: [indexPath], with: .automatic)
+            stepsTableView.deleteRows(at: [indexPath], with: .none)
         }
 
         stepsTableView.beginUpdates()

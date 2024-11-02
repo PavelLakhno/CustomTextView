@@ -12,6 +12,12 @@ class StepDescriptionCell: UITableViewCell {
     
     static let id = "stepDescription"
     
+    var textInput: String? = nil {
+        didSet {
+            stepDescribeTextView.text = textInput
+            stepDescribeTextView.placeholder = textInput == nil ? "Введите описание" : nil
+        }
+    }
     
     lazy var stepDescribeTextView : UITextView = {
         let field = UITextView()
@@ -19,7 +25,7 @@ class StepDescriptionCell: UITableViewCell {
         field.layer.borderColor = UIColor.orange.cgColor
         field.layer.borderWidth = 1
         field.textAlignment = .left
-        field.textColor = .lightGray
+        field.text = textInput
         field.returnKeyType = .done
         field.isScrollEnabled = false
         field.leftSpace(10)
@@ -31,29 +37,19 @@ class StepDescriptionCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-//        checkText()
         setupCell()
     }
     
-    override func prepareForReuse() {
-        stepDescribeTextView.text = nil
-    }
-    
+  
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    
-    private func checkText() {
-        if stepDescribeTextView.text != nil {
-            stepDescribeTextView.placeholder = nil
-            stepDescribeTextView.textColor = UIColor.black
-        } else {
-            stepDescribeTextView.placeholder = "Введите описание"
-            stepDescribeTextView.textColor = UIColor.lightGray
-        }
-    }
    
+    override func prepareForReuse() {
+        stepDescribeTextView.text = nil
+        stepDescribeTextView.placeholder = nil
+    }
+    
     private func setupCell() {
         selectionStyle = .none
         contentView.addSubview(stepDescribeTextView)
