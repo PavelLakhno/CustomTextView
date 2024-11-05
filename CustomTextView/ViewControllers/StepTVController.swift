@@ -58,8 +58,6 @@ class StepTableViewController: UIViewController {
         let btn = UIButton()
         btn.setTitle("Добавить шаг", for: .normal)
         btn.setTitleColor(.gray, for: .normal)
-//        btn.titleLabel?.font = .helveticalBold(withSize: 16)
-//        btn.setImage(Resources.Images.Icons.plus, for: .normal)
         btn.addTarget(self, action: #selector(addStepTapped(_:)), for: .touchUpInside)
         btn.translatesAutoresizingMaskIntoConstraints = false
         return btn
@@ -74,7 +72,7 @@ class StepTableViewController: UIViewController {
         stepsTableView.insertRows(at: [indexPath], with: .automatic)
         stepsTableView.beginUpdates()
         stepsTableView.endUpdates()
-        stepsTableView.dynamicViewHeight()
+        stepsTableView.dynamicHeightForTableView()
     }
 
     
@@ -90,19 +88,10 @@ class StepTableViewController: UIViewController {
         setupConstraints()
     }
     
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(false)
-        print(sectionData)
-        
-        stepsTableView.dynamicViewHeight()
-    }
-    
     private func setupTableViews() {
         stepsTableView.delegate = self
         stepsTableView.dataSource = self
         stepsTableView.register(StepDescriptionCell.self, forCellReuseIdentifier: StepDescriptionCell.id)
-
     }
     
     // MARK: - Configure UI
@@ -123,6 +112,7 @@ class StepTableViewController: UIViewController {
 
             stepsTableView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             stepsTableView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            stepsTableView.heightAnchor.constraint(greaterThanOrEqualToConstant: 100),
 
             addNewStepButton.heightAnchor.constraint(equalToConstant: 24),
         ])
@@ -168,7 +158,8 @@ extension StepTableViewController : UITableViewDelegate, UITableViewDataSource {
             self.stepsTableView.reloadData()
         }
         stepsTableView.endUpdates()
-        stepsTableView.dynamicViewHeight()
+        stepsTableView.layoutIfNeeded()
+        stepsTableView.dynamicHeightForTableView()
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -176,18 +167,15 @@ extension StepTableViewController : UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        50
+        100
     }
-
 }
 
 
 
 // MARK: - UITextViewDelegate
 extension StepTableViewController : UITextViewDelegate {
-
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
-
         if textView.textColor == UIColor.lightGray {
             textView.textColor = UIColor.black
         }
@@ -195,36 +183,31 @@ extension StepTableViewController : UITextViewDelegate {
     }
 
     func textViewDidBeginEditing(_ textView: UITextView) {
-
-
         textView.clearButtonStatus = !textView.hasText
 
         let cell: StepDescriptionCell = textView.superview?.superview as! StepDescriptionCell
         let tableView: UITableView  = cell.superview as! UITableView
         indexPath = tableView.indexPath(for: cell)!
-        print("Begin")
-        print(indexPath)
     }
 
     func textViewDidEndEditing(_ textView: UITextView) {
         textView.endEditing(true)
         textView.resignFirstResponder()
         textView.clearButtonStatus = true
-
     }
 
     func textViewDidChange(_ textView: UITextView) {
-
         textView.placeholder = textView.hasText ? nil : "Введите описание"
         textView.clearButtonStatus = !textView.hasText
-
-        print("section: \(indexPath.section)")
-        print("row: \(indexPath.row)")
         sectionData[indexPath.row].describe = textView.text
         
-         //Обновляем высоту ячейки
+        // Обновляем высоту ячейки и самой таблицы
+        UIView.setAnimationsEnabled(false)
         stepsTableView.beginUpdates()
         stepsTableView.endUpdates()
-        stepsTableView.dynamicViewHeight()
+        UIView.setAnimationsEnabled(true)
+        // Динамически обновляем высоту таблицы
+        stepsTableView.layoutIfNeeded()
+        stepsTableView.dynamicHeightForTableView()
     }
 }

@@ -180,3 +180,10 @@ extension UICollectionView {
     }
 }
 
+extension UITableView {
+    func dynamicHeightForTableView() {
+        self.invalidateIntrinsicContentSize()
+        self.layoutIfNeeded()
+        self.constraints.filter { $0.firstAttribute == .height }.forEach { $0.constant = self.contentSize.height }
+    }
+}
